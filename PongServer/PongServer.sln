@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{28845AFD-CDFE-4C20-945B-6FA5E6DFFFFC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{97AB7708-1E5F-4728-8768-11FF6845B67B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PongServer.Api", "PongServer.Api\PongServer.Api.csproj", "{3C5A6718-FBC2-4447-9BD2-5B753F30069D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PongServer.Application", "PongServer.Application\PongServer.Application.csproj", "{9B309E4D-3A5D-470A-A07E-9DE65F7484CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PongServer.Domain", "PongServer.Domain\PongServer.Domain.csproj", "{BDFA2420-630A-4B5D-B027-60A8543ABF56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PongServer.Infrastructure", "PongServer.Infrastructure\PongServer.Infrastructure.csproj", "{5822E7C9-306A-483F-BFAB-276D9801F437}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C5A6718-FBC2-4447-9BD2-5B753F30069D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C5A6718-FBC2-4447-9BD2-5B753F30069D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C5A6718-FBC2-4447-9BD2-5B753F30069D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C5A6718-FBC2-4447-9BD2-5B753F30069D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B309E4D-3A5D-470A-A07E-9DE65F7484CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B309E4D-3A5D-470A-A07E-9DE65F7484CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B309E4D-3A5D-470A-A07E-9DE65F7484CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B309E4D-3A5D-470A-A07E-9DE65F7484CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDFA2420-630A-4B5D-B027-60A8543ABF56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDFA2420-630A-4B5D-B027-60A8543ABF56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDFA2420-630A-4B5D-B027-60A8543ABF56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDFA2420-630A-4B5D-B027-60A8543ABF56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5822E7C9-306A-483F-BFAB-276D9801F437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5822E7C9-306A-483F-BFAB-276D9801F437}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5822E7C9-306A-483F-BFAB-276D9801F437}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5822E7C9-306A-483F-BFAB-276D9801F437}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3C5A6718-FBC2-4447-9BD2-5B753F30069D} = {97AB7708-1E5F-4728-8768-11FF6845B67B}
+		{9B309E4D-3A5D-470A-A07E-9DE65F7484CF} = {97AB7708-1E5F-4728-8768-11FF6845B67B}
+		{BDFA2420-630A-4B5D-B027-60A8543ABF56} = {97AB7708-1E5F-4728-8768-11FF6845B67B}
+		{5822E7C9-306A-483F-BFAB-276D9801F437} = {97AB7708-1E5F-4728-8768-11FF6845B67B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {08EBAAF2-BF46-49CE-B21D-57EC0D536360}
+	EndGlobalSection
+EndGlobal
