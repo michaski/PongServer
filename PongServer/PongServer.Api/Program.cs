@@ -1,11 +1,10 @@
+using System.Reflection;
+using PongServer.Api.Installers;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Add services
+builder.Services.InstallServicesInAssembly(builder.Configuration, Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 

@@ -13,7 +13,7 @@ namespace PongServer.Api.Installers
         public void InstallServices(IServiceCollection services, IConfiguration Configuration)
         {
             services.AddDbContext<PongDataContext>(opt =>
-                opt.UseNpgsql(Configuration.GetConnectionString("ConnectionStrings:DataConnection")));
+                opt.UseNpgsql(Configuration.GetConnectionString("DataConnection")));
         }
     }
 }

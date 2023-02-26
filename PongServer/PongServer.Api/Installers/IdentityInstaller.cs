@@ -14,13 +14,13 @@ namespace PongServer.Api.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration Configuration)
         {
-            services.AddDbContext<IdentityContext>(opt =>
+            services.AddDbContext<PongDataContext>(opt =>
             {
-                opt.UseNpgsql(Configuration["ConnectionStrings:IdentityConnection"]);
+                opt.UseNpgsql(Configuration["ConnectionStrings:DataConnection"]);
             });
             services.AddIdentity<IdentityUser, IdentityRole>(opt =>
                     opt.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<IdentityContext>();
+                .AddEntityFrameworkStores<PongDataContext>();
         }
     }
 }
