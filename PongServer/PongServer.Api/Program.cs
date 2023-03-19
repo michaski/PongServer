@@ -1,10 +1,15 @@
 using System.Reflection;
+using NLog.Web;
 using PongServer.Api.Installers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.InstallServicesInAssembly(builder.Configuration, Assembly.GetExecutingAssembly());
+
+// Add NLog
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
 
 var app = builder.Build();
 
