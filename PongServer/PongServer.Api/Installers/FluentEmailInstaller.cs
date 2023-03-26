@@ -1,4 +1,6 @@
-﻿using System.Net.Mail;
+﻿using System.Net;
+using System.Net.Mail;
+using PongServer.Application.Services.EmailSender;
 
 namespace PongServer.Api.Installers
 {
@@ -8,15 +10,25 @@ namespace PongServer.Api.Installers
         {
             var emailConfig = Configuration.GetSection("EmailConfig");
             var smtpConfig = emailConfig.GetSection("SmtpSender");
+
+            var smtpClient = new SmtpClient
+            {
+                Host = smtpConfig["Host"],
+                Port = int.Parse(smtpConfig["Port"]),
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                Credentials = new NetworkCredential(smtpConfig["Username"], smtpConfig["Password"])
+            };
+
             services
                 .AddFluentEmail(
                     emailConfig["Email"],
                     emailConfig["Name"])
-                .AddSmtpSender(
-                    smtpConfig["Host"],
-                    int.Parse(smtpConfig["Port"]),
-                    smtpConfig["Username"],
-                    smtpConfig["Password"]);
+                .AddRazorRenderer()
+                .AddSmtpSender(smtpClient);
+
+            services.AddScoped<IEmailSenderService, EmailSenderService>();
         }
     }
 }
