@@ -1,4 +1,6 @@
-﻿namespace PongServer.Api.Middleware
+﻿using PongServer.Domain.Exceptions.Auth;
+
+namespace PongServer.Api.Middleware
 {
     public class ErrorHandlingMiddleware : IMiddleware
     {
@@ -14,6 +16,15 @@
             try
             {
                 await next.Invoke(context);
+            }
+            catch (IdentityException ex)
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    Message = ex.Message,
+                    Errors = ex.Errors
+                });
             }
             catch (Exception ex)
             {

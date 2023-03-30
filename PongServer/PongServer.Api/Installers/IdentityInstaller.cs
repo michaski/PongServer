@@ -19,7 +19,10 @@ namespace PongServer.Api.Installers
                 opt.UseNpgsql(Configuration["ConnectionStrings:DataConnection"]);
             });
             services.AddIdentity<IdentityUser, IdentityRole>(opt =>
-                    opt.SignIn.RequireConfirmedAccount = false)
+                    {
+                        opt.User.RequireUniqueEmail = true;
+                        opt.SignIn.RequireConfirmedAccount = false;
+                    })
                 .AddEntityFrameworkStores<PongDataContext>();
         }
     }
