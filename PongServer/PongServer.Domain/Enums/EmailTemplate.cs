@@ -8,6 +8,7 @@ namespace PongServer.Domain.Enums
 {
     public enum EmailTemplate
     {
-        BaseTemplate
+        BaseTemplate,
+        EmailVerification
     }
 }

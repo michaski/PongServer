@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <None Remove="Services\EmailSender\EmailTemplates\BaseTemplate.cshtml" />
+    <None Remove="Services\EmailSender\EmailTemplates\EmailVerification.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Services\EmailSender\EmailTemplates\EmailVerification.cshtml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Services\EmailSender\EmailTemplates\BaseTemplate.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

@@ -36,5 +36,20 @@ namespace PongServer.Api.Controllers
             var newUser = await _authService.RegisterNewUserAsync(userDto);
             return CreatedAtAction("GetUserById", new { id = newUser.Id }, newUser);
         }
+
+        [HttpGet("confirmEmail", Name = "ConfirmEmail")]
+        [SwaggerOperation(Summary = "Confirms email.")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string activationCode)
+        {
+            var succeeded = await _authService.ConfirmEmailAsync(userId, activationCode);
+            if (succeeded)
+            {
+                return Ok("Email verified.");
+            }
+            else
+            {
+                return BadRequest("Email couldn't be verified.");
+            }
+        }
     }
 }
