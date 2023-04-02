@@ -22,6 +22,11 @@ namespace PongServer.Api.Installers
                 {
                     opt.User.RequireUniqueEmail = true;
                     opt.SignIn.RequireConfirmedAccount = true;
+                    opt.Password.RequireDigit = true;
+                    opt.Password.RequireLowercase = true;
+                    opt.Password.RequireUppercase = true;
+                    opt.Password.RequireNonAlphanumeric = true;
+                    opt.Password.RequiredLength = 6;
                 })
                 .AddEntityFrameworkStores<PongDataContext>()
                 .AddDefaultTokenProviders();
