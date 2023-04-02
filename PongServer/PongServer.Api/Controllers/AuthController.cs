@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PongServer.Application.Dtos.Auth;
 using PongServer.Application.Services.Auth;
+using PongServer.Domain.Entities;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace PongServer.Api.Controllers
@@ -11,10 +13,12 @@ namespace PongServer.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IMapper mapper)
         {
             _authService = authService;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
@@ -33,22 +37,28 @@ namespace PongServer.Api.Controllers
         [SwaggerOperation(Summary = "Creates new user account with need for activation.")]
         public async Task<IActionResult> RegisterUser(RegisterUserDto userDto)
         {
-            var newUser = await _authService.RegisterNewUserAsync(userDto);
-            return CreatedAtAction("GetUserById", new { id = newUser.Id }, newUser);
+            var result = await _authService.RegisterNewUserAsync(userDto);
+            if (!result.Succeeded)
+            {
+                return BadRequest(_mapper.Map<AuthenticationResult, FailedAuthenticationResultDto>(result));
+            }
+
+            var createdUserDto = result.Payload as CreatedUserDto;
+            return CreatedAtAction("GetUserById", new { id = createdUserDto.Id }, createdUserDto);
         }
 
         [HttpGet("confirmEmail", Name = "ConfirmEmail")]
         [SwaggerOperation(Summary = "Confirms email.")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string activationCode)
         {
-            var succeeded = await _authService.ConfirmEmailAsync(userId, activationCode);
-            if (succeeded)
+            var result = await _authService.ConfirmEmailAsync(userId, activationCode);
+            if (result.Succeeded)
             {
-                return Ok("Email verified.");
+                return Ok(result.Message);
             }
             else
             {
-                return BadRequest("Email couldn't be verified.");
+                return BadRequest(_mapper.Map<AuthenticationResult, FailedAuthenticationResultDto>(result));
             }
         }
     }

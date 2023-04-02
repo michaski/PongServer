@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using PongServer.Application.Dtos.Auth;
 using PongServer.Application.Services.EmailSender;
+using PongServer.Domain.Entities;
 using PongServer.Domain.Enums;
 using PongServer.Domain.Exceptions.Auth;
 
@@ -37,16 +38,36 @@ namespace PongServer.Application.Services.Auth
             _linkGenerator = linkGenerator;
         }
 
-        public async Task<CreatedUserDto> RegisterNewUserAsync(RegisterUserDto userDto)
+        public async Task<AuthenticationResult> RegisterNewUserAsync(RegisterUserDto userDto)
         {
             var registrationResult = await _userManager.CreateAsync(_mapper.Map<IdentityUser>(userDto));
             if (!registrationResult.Succeeded)
             {
-                throw new IdentityException("Failed to register the user.",  registrationResult.Errors);
+                return new AuthenticationResult()
+                {
+                    Succeeded = false,
+                    Message = "Failed to register the user.",
+                    Errors = registrationResult.Errors.Select(error => error.Description)
+                };
             }
-            await SendAccountActivationLinkAsync(userDto.Email);
-            return _mapper.Map<CreatedUserDto>(
-                await _userManager.FindByEmailAsync(userDto.Email));
+
+            var emailSent = await SendAccountActivationLinkAsync(userDto.Email);
+            if (!emailSent)
+            {
+                return new AuthenticationResult()
+                {
+                    Succeeded = false,
+                    Message = "Failed to send confirmation email. Please try again."
+                };
+            }
+
+            var createdUser = await _userManager.FindByEmailAsync(userDto.Email);
+            return new AuthenticationResult()
+            {
+                Succeeded = true,
+                Message = "Account created successfully. Please check your email for verification link.",
+                Payload = _mapper.Map<IdentityUser, CreatedUserDto>(createdUser)
+            };
         }
 
         public async Task<CreatedUserDto> GetUserByIdAsync(Guid id)
@@ -55,7 +76,7 @@ namespace PongServer.Application.Services.Auth
                 await _userManager.FindByIdAsync(id.ToString()));
         }
 
-        public async Task SendAccountActivationLinkAsync(string email)
+        public async Task<bool> SendAccountActivationLinkAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             var activationCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -65,22 +86,37 @@ namespace PongServer.Application.Services.Auth
                 "Email verification", 
                 EmailTemplate.EmailVerification,
                 new { ActivationLink = GetActivationLink(user, activationCode), Nick = user.UserName });
-            if (!succeeded)
-            {
-                throw new Exception("Failed to send confirmation email. Please try again.");
-            }
+            return succeeded;
         }
 
-        public async Task<bool> ConfirmEmailAsync(string userId, string activationCode)
+        public async Task<AuthenticationResult> ConfirmEmailAsync(string userId, string activationCode)
         {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                return new AuthenticationResult()
+                {
+                    Succeeded = false,
+                    Message = "User with given id does not exist."
+                };
+            }
             var decodedActivationCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(activationCode));
             var result = await _userManager.ConfirmEmailAsync(user, decodedActivationCode);
+
             if (!result.Succeeded)
             {
-                throw new IdentityException("Failed to confirm the email.", result.Errors);
+                return new AuthenticationResult()
+                {
+                    Succeeded = false,
+                    Message = "Failed to confirm the email.",
+                    Errors = result.Errors.Select(error => error.Description)
+                };
             }
-            return result.Succeeded;
+            return new AuthenticationResult()
+            {
+                Succeeded = true,
+                Message = "Email confirmed."
+            };
         }
 
         private string GetActivationLink(IdentityUser user, string activationCode)

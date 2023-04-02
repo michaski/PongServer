@@ -5,15 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PongServer.Domain.Entities;
 
 namespace PongServer.Application.Services.Auth
 {
     public interface IAuthService
     {
-        Task<CreatedUserDto> RegisterNewUserAsync(RegisterUserDto userDto);
+        Task<AuthenticationResult> RegisterNewUserAsync(RegisterUserDto userDto);
 
         Task<CreatedUserDto> GetUserByIdAsync(Guid id);
-        Task SendAccountActivationLinkAsync(string email);
-        Task<bool> ConfirmEmailAsync(string userId, string activationCode);
+        Task<bool> SendAccountActivationLinkAsync(string email);
+        Task<AuthenticationResult> ConfirmEmailAsync(string userId, string activationCode);
     }
 }
