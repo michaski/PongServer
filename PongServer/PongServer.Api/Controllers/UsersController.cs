@@ -46,5 +46,22 @@ namespace PongServer.Api.Controllers
             }
             return NoContent();
         }
+
+        [HttpDelete()]
+        [SwaggerOperation(Summary = "Delete account.")]
+        public async Task<IActionResult> Delete()
+        {
+            var result = await _usersService.DeleteUserAsync();
+            if (!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    Message = result.Message,
+                    Errors = result.Errors
+                });
+            }
+
+            return NoContent();
+        }
     }
 }

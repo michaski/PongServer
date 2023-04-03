@@ -64,5 +64,35 @@ namespace PongServer.Application.Services.Users
                 Message = "Username changed successfully."
             };
         }
+
+        public async Task<AccountAlterResult> DeleteUserAsync()
+        {
+            var user = await _userManager.FindByIdAsync(_userContextService.UserId);
+            if (user is null)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "User with given id was not found."
+                };
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "Could not delete user.",
+                    Errors = result.Errors.Select(err => err.Description)
+                };
+            }
+
+            return new AccountAlterResult
+            {
+                Succeeded = true,
+                Message = "Account deleted."
+            };
+        }
     }
 }
