@@ -21,18 +21,6 @@ namespace PongServer.Api.Controllers
             _authService = authService;
             _mapper = mapper;
         }
-        
-        [HttpGet("{id}")]
-        [SwaggerOperation(Summary = "Gets user by id")]
-        public async Task<IActionResult> GetUserById(Guid id)
-        {
-            var user = await _authService.GetUserByIdAsync(id);
-            if (user is null)
-            {
-                return NotFound("User with given id was not found.");
-            }
-            return Ok(user);
-        }
 
         [HttpPost("/register")]
         [SwaggerOperation(Summary = "Creates new user account with need for activation.")]
@@ -45,7 +33,7 @@ namespace PongServer.Api.Controllers
             }
 
             var createdUserDto = result.Payload as CreatedUserDto;
-            return CreatedAtAction("GetUserById", new { id = createdUserDto.Id }, createdUserDto);
+            return CreatedAtAction("GetUserById", "Users", new { id = createdUserDto.Id }, createdUserDto);
         }
 
         [HttpGet("confirmEmail", Name = "ConfirmEmail")]

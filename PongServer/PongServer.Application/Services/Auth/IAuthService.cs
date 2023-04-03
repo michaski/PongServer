@@ -12,8 +12,6 @@ namespace PongServer.Application.Services.Auth
     public interface IAuthService
     {
         Task<AuthenticationResult> RegisterNewUserAsync(RegisterUserDto userDto);
-
-        Task<CreatedUserDto> GetUserByIdAsync(Guid id);
         Task<bool> SendAccountActivationLinkAsync(string email);
         Task<AuthenticationResult> ConfirmEmailAsync(string userId, string activationCode);
         Task<AuthenticationResult> AuthenticateUserAsync(LoginUserDto loginDto);

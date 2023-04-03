@@ -77,12 +77,6 @@ namespace PongServer.Application.Services.Auth
             };
         }
 
-        public async Task<CreatedUserDto> GetUserByIdAsync(Guid id)
-        {
-            return _mapper.Map<CreatedUserDto>(
-                await _userManager.FindByIdAsync(id.ToString()));
-        }
-
         public async Task<bool> SendAccountActivationLinkAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
