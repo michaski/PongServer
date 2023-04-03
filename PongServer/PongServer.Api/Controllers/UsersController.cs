@@ -36,6 +36,14 @@ namespace PongServer.Api.Controllers
         public async Task<IActionResult> ChangeNick(ChangeNickDto changeNickDto)
         {
             var result = await _usersService.ChangeNickAsync(changeNickDto);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    Message = result.Message
+                });
+            }
+            return NoContent();
         }
     }
 }

@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using PongServer.Application.Dtos.Users;
+using PongServer.Application.Services.UserContext;
 using PongServer.Domain.Entities;
 
 namespace PongServer.Application.Services.Users
@@ -16,7 +18,9 @@ namespace PongServer.Application.Services.Users
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public UsersService(IMapper mapper, UserManager<IdentityUser> userManager)
+        public UsersService(
+            IMapper mapper, 
+            UserManager<IdentityUser> userManager)
         {
             _mapper = mapper;
             _userManager = userManager;
