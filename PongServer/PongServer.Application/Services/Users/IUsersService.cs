@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PongServer.Application.Dtos.Users;
+using PongServer.Domain.Entities;
 
 namespace PongServer.Application.Services.Users
 {
     public interface IUsersService
     {
         Task<CreatedUserDto> GetUserByIdAsync(Guid id);
+        Task<AccountAlterResult> ChangeNickAsync(ChangeNickDto changeNickDto);
     }
 }

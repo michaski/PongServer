@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using PongServer.Application.Dtos.Users;
+using PongServer.Domain.Entities;
 
 namespace PongServer.Application.Services.Users
 {
@@ -24,6 +26,11 @@ namespace PongServer.Application.Services.Users
         {
             return _mapper.Map<CreatedUserDto>(
                 await _userManager.FindByIdAsync(id.ToString()));
+        }
+
+        public Task<AccountAlterResult> ChangeNickAsync(ChangeNickDto changeNickDto)
+        {
+            throw new NotImplementedException();
         }
     }
 }

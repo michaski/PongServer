@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PongServer.Application.Dtos.Users;
 using PongServer.Application.Services.Users;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -28,6 +29,13 @@ namespace PongServer.Api.Controllers
                 return NotFound("User with given id was not found.");
             }
             return Ok(user);
+        }
+
+        [HttpPut("changeNick")]
+        [SwaggerOperation(Summary = "Change user's nick.")]
+        public async Task<IActionResult> ChangeNick(ChangeNickDto changeNickDto)
+        {
+            var result = await _usersService.ChangeNickAsync(changeNickDto);
         }
     }
 }
