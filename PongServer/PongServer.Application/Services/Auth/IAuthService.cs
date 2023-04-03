@@ -16,5 +16,6 @@ namespace PongServer.Application.Services.Auth
         Task<CreatedUserDto> GetUserByIdAsync(Guid id);
         Task<bool> SendAccountActivationLinkAsync(string email);
         Task<AuthenticationResult> ConfirmEmailAsync(string userId, string activationCode);
+        Task<AuthenticationResult> AuthenticateUserAsync(LoginUserDto loginDto);
     }
 }

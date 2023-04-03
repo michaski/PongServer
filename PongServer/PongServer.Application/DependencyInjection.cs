@@ -22,6 +22,7 @@ namespace PongServer.Application
             services.AddFluentValidationAutoValidation();
 
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserValidator>();
+            services.AddScoped<IValidator<LoginUserDto>, LoginUserValidator>();
 
             services.AddScoped<IAuthService, AuthService>();
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -8,6 +10,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using PongServer.Application.Dtos.Auth;
 using PongServer.Application.Services.EmailSender;
 using PongServer.Domain.Entities;
@@ -23,24 +27,27 @@ namespace PongServer.Application.Services.Auth
         private readonly IEmailSenderService _emailSenderService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LinkGenerator _linkGenerator;
+        private readonly IConfiguration _configuration;
 
         public AuthService(
             UserManager<IdentityUser> userManager, 
             IMapper mapper, 
             IEmailSenderService emailSenderService, 
             IHttpContextAccessor httpContextAccessor,
-            LinkGenerator linkGenerator)
+            LinkGenerator linkGenerator,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _mapper = mapper;
             _emailSenderService = emailSenderService;
             _httpContextAccessor = httpContextAccessor;
             _linkGenerator = linkGenerator;
+            _configuration = configuration;
         }
 
         public async Task<AuthenticationResult> RegisterNewUserAsync(RegisterUserDto userDto)
         {
-            var registrationResult = await _userManager.CreateAsync(_mapper.Map<IdentityUser>(userDto));
+            var registrationResult = await _userManager.CreateAsync(_mapper.Map<IdentityUser>(userDto), userDto.Password);
             if (!registrationResult.Succeeded)
             {
                 return new AuthenticationResult()
@@ -117,6 +124,65 @@ namespace PongServer.Application.Services.Auth
                 Succeeded = true,
                 Message = "Email confirmed."
             };
+        }
+
+        public async Task<AuthenticationResult> AuthenticateUserAsync(LoginUserDto loginDto)
+        {
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            if (user is null)
+            {
+                return new AuthenticationResult()
+                {
+                    Succeeded = false,
+                    Message = "Login failed - wrong email or password."
+                };
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                return new AuthenticationResult()
+                {
+                    Succeeded = false,
+                    Message = "Account has not been activated. Please check your email for activation link."
+                };
+            }
+
+            var passwordIsCorrect = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+            if (!passwordIsCorrect)
+            {
+                return new AuthenticationResult()
+                {
+                    Succeeded = false,
+                    Message = "Login failed - wrong email or password."
+                };
+            }
+
+            return new AuthenticationResult
+            {
+                Succeeded = true,
+                Token = GetJwtToken(user.Id)
+            };
+        }
+
+        private string GetJwtToken(string userId)
+        {
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            byte[] secret = Encoding.UTF8.GetBytes(_configuration["Authentication:JwtSecretKey"]);
+            var descriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userId)
+                }),
+                Expires = DateTime.Now.AddHours(double.Parse(_configuration["Authentication:JwtExpireHours"])),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(secret),
+                    SecurityAlgorithms.HmacSha256Signature),
+                Issuer = _configuration["Authentication:JwtIssuer"],
+                Audience = _configuration["Authentication:JwtIssuer"],
+            };
+            var token = handler.CreateToken(descriptor);
+            return handler.WriteToken(token);
         }
 
         private string GetActivationLink(IdentityUser user, string activationCode)

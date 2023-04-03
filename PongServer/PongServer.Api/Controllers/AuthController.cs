@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PongServer.Application.Dtos.Auth;
@@ -20,7 +21,7 @@ namespace PongServer.Api.Controllers
             _authService = authService;
             _mapper = mapper;
         }
-
+        
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Gets user by id")]
         public async Task<IActionResult> GetUserById(Guid id)
@@ -33,7 +34,7 @@ namespace PongServer.Api.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("/register")]
         [SwaggerOperation(Summary = "Creates new user account with need for activation.")]
         public async Task<IActionResult> RegisterUser(RegisterUserDto userDto)
         {
@@ -60,6 +61,24 @@ namespace PongServer.Api.Controllers
             {
                 return BadRequest(_mapper.Map<AuthenticationResult, FailedAuthenticationResultDto>(result));
             }
+        }
+
+        [HttpPost("/login")]
+        [SwaggerOperation(Summary = "Authenticates user and returns JWT token.")]
+        public async Task<IActionResult> Login(LoginUserDto loginDto)
+        {
+            var loginResult = await _authService.AuthenticateUserAsync(loginDto);
+            if (!loginResult.Succeeded)
+            {
+                return Unauthorized(new
+                {
+                    Message = loginResult.Message
+                });  
+            }
+            return Ok(new
+            {
+                Token = loginResult.Token
+            });
         }
     }
 }
