@@ -40,7 +40,8 @@ namespace PongServer.Api.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = result.Message
+                    Message = result.Message,
+                    Errors = result.Errors
                 });
             }
             return NoContent();

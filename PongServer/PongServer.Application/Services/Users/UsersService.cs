@@ -17,13 +17,16 @@ namespace PongServer.Application.Services.Users
     {
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUserContextService _userContextService;
 
         public UsersService(
             IMapper mapper, 
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            IUserContextService userContextService)
         {
             _mapper = mapper;
             _userManager = userManager;
+            _userContextService = userContextService;
         }
 
         public async Task<CreatedUserDto> GetUserByIdAsync(Guid id)
@@ -32,9 +35,34 @@ namespace PongServer.Application.Services.Users
                 await _userManager.FindByIdAsync(id.ToString()));
         }
 
-        public Task<AccountAlterResult> ChangeNickAsync(ChangeNickDto changeNickDto)
+        public async Task<AccountAlterResult> ChangeNickAsync(ChangeNickDto changeNickDto)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(_userContextService.UserId);
+            if (user is null)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "Could not verify user."
+                };
+            }
+
+            var result = await _userManager.SetUserNameAsync(user, changeNickDto.Nick);
+            if (!result.Succeeded)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "Failed to change user name.",
+                    Errors = result.Errors.Select(err => err.Description)
+                };
+            }
+
+            return new AccountAlterResult
+            {
+                Succeeded = true,
+                Message = "Username changed successfully."
+            };
         }
     }
 }
