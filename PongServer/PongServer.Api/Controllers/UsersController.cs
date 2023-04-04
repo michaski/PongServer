@@ -63,6 +63,22 @@ namespace PongServer.Api.Controllers
             return NoContent();
         }
 
+        [HttpPut("changeEmail")]
+        [SwaggerOperation(Summary = "Change user's email. Required email verification.")]
+        public async Task<IActionResult> ChangeEmail(ResetEmailDto resetEmailDto)
+        {
+            var result = await _usersService.ChangeEmailAsync(resetEmailDto);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    Message = result.Message,
+                    Errors = result.Errors
+                });
+            }
+            return NoContent();
+        }
+
         [HttpDelete()]
         [SwaggerOperation(Summary = "Delete account.")]
         public async Task<IActionResult> Delete()

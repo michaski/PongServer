@@ -185,6 +185,28 @@ namespace PongServer.Application.Services.Auth
             return succeeded;
         }
 
+        public async Task<bool> SendEmailResetTokenAsync(ChangeEmailDto changeEmailDto)
+        {
+            var user = await _userManager.FindByIdAsync(_userContextService.UserId);
+            if (user is null)
+            {
+                return false;
+            }
+
+            var emailResetToken = await _userManager.GenerateChangeEmailTokenAsync(user, changeEmailDto.NewEmail);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailResetToken));
+            var succeeded = await _emailSenderService.SendEmailAsync(
+                user.Email,
+                "Email change",
+                EmailTemplate.EmailChange,
+                new
+                {
+                    Nick = user.UserName,
+                    ChangeEmailToken = encodedToken
+                });
+            return succeeded;
+        }
+
         private string GetJwtToken(string userId)
         {
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();

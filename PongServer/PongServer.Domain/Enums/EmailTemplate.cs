@@ -10,6 +10,7 @@ namespace PongServer.Domain.Enums
     {
         BaseTemplate,
         EmailVerification,
-        PasswordReset
+        PasswordReset,
+        EmailChange
     }
 }

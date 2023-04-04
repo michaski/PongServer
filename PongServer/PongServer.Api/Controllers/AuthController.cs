@@ -70,7 +70,7 @@ namespace PongServer.Api.Controllers
         }
 
         [Authorize]
-        [HttpGet("requestPasswordChange")]
+        [HttpPut("requestPasswordChange")]
         [SwaggerOperation(Summary = "Sends password change token to user's email.")]
         public async Task<IActionResult> RequestPasswordChange()
         {
@@ -80,7 +80,21 @@ namespace PongServer.Api.Controllers
                 return BadRequest();
             }
 
-            return Ok();
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPut("requestEmailChange")]
+        [SwaggerOperation(Summary = "Sends email change token to user's email.")]
+        public async Task<IActionResult> RequestEmailChange(ChangeEmailDto changeEmailDto)
+        {
+            var result = await _authService.SendEmailResetTokenAsync(changeEmailDto);
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
         }
     }
 }

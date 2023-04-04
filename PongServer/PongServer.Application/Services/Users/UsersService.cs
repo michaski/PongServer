@@ -6,11 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using PongServer.Application.Dtos.Users;
+using PongServer.Application.Services.EmailSender;
 using PongServer.Application.Services.UserContext;
 using PongServer.Domain.Entities;
+using PongServer.Domain.Enums;
 
 namespace PongServer.Application.Services.Users
 {
@@ -19,15 +23,24 @@ namespace PongServer.Application.Services.Users
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserContextService _userContextService;
+        private readonly IEmailSenderService _emailSenderService;
+        private readonly LinkGenerator _linkGenerator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UsersService(
             IMapper mapper, 
             UserManager<IdentityUser> userManager,
-            IUserContextService userContextService)
+            IUserContextService userContextService,
+            IEmailSenderService emailSenderService,
+            LinkGenerator linkGenerator,
+            IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _userManager = userManager;
             _userContextService = userContextService;
+            _emailSenderService = emailSenderService;
+            _linkGenerator = linkGenerator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<CreatedUserDto> GetUserByIdAsync(Guid id)
@@ -146,6 +159,58 @@ namespace PongServer.Application.Services.Users
             {
                 Succeeded = true,
                 Message = "Password changed."
+            };
+        }
+
+        public async Task<AccountAlterResult> ChangeEmailAsync(ResetEmailDto resetEmailDto)
+        {
+            var user = await _userManager.FindByIdAsync(_userContextService.UserId);
+            if (user == null)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "User with given id was not found."
+                };
+            }
+
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetEmailDto.ChangeEmailToken));
+            var result = await _userManager.ChangeEmailAsync(user, resetEmailDto.NewEmail, decodedToken);
+            if (!result.Succeeded)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "Email change failed.",
+                    Errors = result.Errors.Select(error => error.Description)
+                };
+            }
+
+            var activationCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            activationCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(activationCode));
+
+            var emailSent = await _emailSenderService.SendEmailAsync(
+                resetEmailDto.NewEmail, 
+                "New Email Verification", 
+                EmailTemplate.EmailVerification, 
+                new
+                {
+                    Nick = user.UserName,
+                    ActivationLink = _linkGenerator.GetUriByAction(
+                        _httpContextAccessor.HttpContext,
+                        action: "ConfirmEmail",
+                        controller: "Auth",
+                        values: new
+                        {
+                            userId = user.Id,
+                            activationCode = activationCode
+                        })
+                });
+
+            return new AccountAlterResult
+            {
+                Succeeded = emailSent,
+                Message = emailSent ? "Email changed. Please activate new email." : "Could not send verification email."
             };
         }
     }

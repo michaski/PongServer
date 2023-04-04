@@ -15,5 +15,6 @@ namespace PongServer.Application.Services.Users
         Task<AccountAlterResult> ChangeNickAsync(ChangeNickDto changeNickDto);
         Task<AccountAlterResult> DeleteUserAsync();
         Task<AccountAlterResult> ChangePasswordAsync(ResetPasswordDto resetPasswordDto);
+        Task<AccountAlterResult> ChangeEmailAsync(ResetEmailDto resetEmailDto);
     }
 }
