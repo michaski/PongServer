@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using PongServer.Application.Dtos.Users;
 using PongServer.Application.Services.UserContext;
@@ -92,6 +93,49 @@ namespace PongServer.Application.Services.Users
             {
                 Succeeded = true,
                 Message = "Account deleted."
+            };
+        }
+
+        public async Task<AccountAlterResult> ChangePasswordAsync(ResetPasswordDto resetPasswordDto)
+        {
+            var user = await _userManager.FindByIdAsync(_userContextService.UserId);
+            if (user is null)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "User with given id was not found."
+                };
+            }
+
+            if (!await _userManager.CheckPasswordAsync(user, resetPasswordDto.OldPassword))
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "Old password is incorrect."
+                };
+            }
+
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordDto.ResetPasswordToken));
+
+            var result = await _userManager.ResetPasswordAsync(
+                user, 
+                decodedToken, 
+                resetPasswordDto.NewPassword);
+            if (!result.Succeeded)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Errors = result.Errors.Select(error => error.Description)
+                };
+            }
+
+            return new AccountAlterResult
+            {
+                Succeeded = true,
+                Message = "Password changed."
             };
         }
     }

@@ -8,10 +8,12 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using PongServer.Application.Dtos.Auth;
+using PongServer.Application.Dtos.Users;
 using PongServer.Application.Services.Auth;
 using PongServer.Application.Services.UserContext;
 using PongServer.Application.Services.Users;
 using PongServer.Application.Validators.Auth;
+using PongServer.Application.Validators.Users;
 
 namespace PongServer.Application
 {
@@ -25,6 +27,7 @@ namespace PongServer.Application
 
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserValidator>();
             services.AddScoped<IValidator<LoginUserDto>, LoginUserValidator>();
+            services.AddScoped<IValidator<ResetPasswordDto>, ResetPasswordValidator>();
 
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddScoped<IAuthService, AuthService>();

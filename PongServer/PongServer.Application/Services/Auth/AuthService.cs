@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PongServer.Application.Dtos.Auth;
 using PongServer.Application.Services.EmailSender;
+using PongServer.Application.Services.UserContext;
 using PongServer.Domain.Entities;
 using PongServer.Domain.Enums;
 using PongServer.Domain.Exceptions.Auth;
@@ -28,6 +29,7 @@ namespace PongServer.Application.Services.Auth
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LinkGenerator _linkGenerator;
         private readonly IConfiguration _configuration;
+        private readonly IUserContextService _userContextService;
 
         public AuthService(
             UserManager<IdentityUser> userManager, 
@@ -35,7 +37,8 @@ namespace PongServer.Application.Services.Auth
             IEmailSenderService emailSenderService, 
             IHttpContextAccessor httpContextAccessor,
             LinkGenerator linkGenerator,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IUserContextService userContextService)
         {
             _userManager = userManager;
             _mapper = mapper;
@@ -43,6 +46,7 @@ namespace PongServer.Application.Services.Auth
             _httpContextAccessor = httpContextAccessor;
             _linkGenerator = linkGenerator;
             _configuration = configuration;
+            _userContextService = userContextService;
         }
 
         public async Task<AuthenticationResult> RegisterNewUserAsync(RegisterUserDto userDto)
@@ -158,6 +162,29 @@ namespace PongServer.Application.Services.Auth
             };
         }
 
+        public async Task<bool> SendPasswordResetTokenAsync()
+        {
+            var user = await _userManager.FindByIdAsync(_userContextService.UserId);
+            if (user is null)
+            {
+                return false;
+            }
+
+            var passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(passwordResetToken));
+            var succeeded = await _emailSenderService.SendEmailAsync(
+                user.Email, 
+                "Password reset", 
+                EmailTemplate.PasswordReset, 
+                new
+                {
+                    Nick = user.UserName,
+                    PasswordResetToken = encodedToken
+                });
+
+            return succeeded;
+        }
+
         private string GetJwtToken(string userId)
         {
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
@@ -184,6 +211,7 @@ namespace PongServer.Application.Services.Auth
             return _linkGenerator.GetUriByAction(
                 _httpContextAccessor.HttpContext,
                 action: "ConfirmEmail",
+                controller: "Auth",
                 values: new
                 {
                     userId = user.Id,

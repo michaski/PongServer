@@ -68,5 +68,19 @@ namespace PongServer.Api.Controllers
                 Token = loginResult.Token
             });
         }
+
+        [Authorize]
+        [HttpGet("requestPasswordChange")]
+        [SwaggerOperation(Summary = "Sends password change token to user's email.")]
+        public async Task<IActionResult> RequestPasswordChange()
+        {
+            var result = await _authService.SendPasswordResetTokenAsync();
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
     }
 }

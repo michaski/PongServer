@@ -47,6 +47,22 @@ namespace PongServer.Api.Controllers
             return NoContent();
         }
 
+        [HttpPut("changePassword")]
+        [SwaggerOperation(Summary = "Change user's password. Required email verification.")]
+        public async Task<IActionResult> ChangePassword(ResetPasswordDto resetPasswordDto)
+        {
+            var result = await _usersService.ChangePasswordAsync(resetPasswordDto);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    Message = result.Message,
+                    Errors = result.Errors
+                });
+            }
+            return NoContent();
+        }
+
         [HttpDelete()]
         [SwaggerOperation(Summary = "Delete account.")]
         public async Task<IActionResult> Delete()
