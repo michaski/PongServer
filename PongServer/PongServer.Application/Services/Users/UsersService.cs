@@ -118,10 +118,20 @@ namespace PongServer.Application.Services.Users
             }
 
             var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordDto.ResetPasswordToken));
+            var isValidToken = await _userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultProvider,
+                UserManager<IdentityUser>.ResetPasswordTokenPurpose, decodedToken);
+            if (!isValidToken)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "Reset password token is not valid."
+                };
+            }
 
-            var result = await _userManager.ResetPasswordAsync(
+            var result = await _userManager.ChangePasswordAsync(
                 user, 
-                decodedToken, 
+                resetPasswordDto.OldPassword, 
                 resetPasswordDto.NewPassword);
             if (!result.Succeeded)
             {

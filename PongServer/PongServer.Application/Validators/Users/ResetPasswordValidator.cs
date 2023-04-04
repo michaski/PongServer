@@ -23,7 +23,7 @@ namespace PongServer.Application.Validators.Users
                 .MinimumLength(6)
                 .Matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")
                 .WithMessage("Password must contain at least one lowercase and one uppercase character, one digit and one symbol.");
-            RuleFor(dto => dto.ResetPasswordToken)
+            RuleFor(dto => dto.ConfirmNewPassword)
                 .NotEmpty()
                 .MinimumLength(6)
                 .Must((dto, password) => dto.NewPassword == dto.ConfirmNewPassword)
