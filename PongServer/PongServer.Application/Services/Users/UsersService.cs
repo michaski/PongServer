@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PongServer.Application.Dtos.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using PongServer.Application.Dtos.Users;
+using PongServer.Application.Dtos.V1.Auth;
+using PongServer.Application.Dtos.V1.Users;
 using PongServer.Application.Services.EmailSender;
 using PongServer.Application.Services.UserContext;
 using PongServer.Domain.Entities;

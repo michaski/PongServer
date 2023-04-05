@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using PongServer.Application.Mappings;
 using PongServer.Domain.Entities;
 
-namespace PongServer.Application.Dtos.Auth
+namespace PongServer.Application.Dtos.V1.Auth
 {
     public class FailedAuthenticationResultDto : IMap
     {

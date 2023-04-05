@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
-using PongServer.Application.Dtos.Auth;
+using PongServer.Application.Dtos.V1.Auth;
 
 namespace PongServer.Application.Validators.Auth
 {

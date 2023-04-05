@@ -1,10 +1,10 @@
-﻿using PongServer.Application.Dtos.Auth;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PongServer.Application.Dtos.Users;
+using PongServer.Application.Dtos.V1.Auth;
+using PongServer.Application.Dtos.V1.Users;
 using PongServer.Domain.Entities;
 
 namespace PongServer.Application.Services.Users

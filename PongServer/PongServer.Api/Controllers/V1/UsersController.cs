@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PongServer.Application.Dtos.Auth;
-using PongServer.Application.Dtos.Users;
+using PongServer.Application.Dtos.V1.Auth;
+using PongServer.Application.Dtos.V1.Users;
 using PongServer.Application.Services.Users;
 using PongServer.Domain.Entities;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace PongServer.Api.Controllers
+namespace PongServer.Api.Controllers.V1
 {
     [Route("api/[controller]")]
     [ApiController]

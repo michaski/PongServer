@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PongServer.Application.Dtos.Auth;
+using PongServer.Application.Dtos.V1.Auth;
 using PongServer.Application.Services.Auth;
 using PongServer.Domain.Entities;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace PongServer.Api.Controllers
+namespace PongServer.Api.Controllers.V1
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,7 +21,7 @@ namespace PongServer.Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("/register")]
+        [HttpPost("register")]
         [SwaggerOperation(Summary = "Creates new user account with need for activation.")]
         public async Task<IActionResult> RegisterUser(RegisterUserDto userDto)
         {
@@ -51,7 +50,7 @@ namespace PongServer.Api.Controllers
             }
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         [SwaggerOperation(Summary = "Authenticates user and returns JWT token.")]
         public async Task<IActionResult> Login(LoginUserDto loginDto)
         {

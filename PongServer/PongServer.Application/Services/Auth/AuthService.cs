@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using PongServer.Application.Dtos.Auth;
+using PongServer.Application.Dtos.V1.Auth;
 using PongServer.Application.Services.EmailSender;
 using PongServer.Application.Services.UserContext;
 using PongServer.Domain.Entities;

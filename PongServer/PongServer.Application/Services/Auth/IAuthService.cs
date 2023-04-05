@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PongServer.Application.Dtos.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PongServer.Application.Dtos.V1.Auth;
 using PongServer.Domain.Entities;
 
 namespace PongServer.Application.Services.Auth
