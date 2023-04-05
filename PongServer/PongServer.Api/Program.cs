@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using NLog.Web;
 using PongServer.Api.Installers;
 using PongServer.Api.Middleware;
@@ -14,11 +15,20 @@ builder.Host.UseNLog();
 
 var app = builder.Build();
 
+var apiVersionDescriptorProvier = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        foreach (var apiVersionDescription in apiVersionDescriptorProvier.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint($"/swagger/{apiVersionDescription.GroupName}/swagger.json",
+                apiVersionDescription.GroupName.ToUpperInvariant());
+        }
+    });
 }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();

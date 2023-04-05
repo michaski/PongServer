@@ -9,8 +9,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace PongServer.Api.Controllers.V1
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     [Authorize]
     public class UsersController : ControllerBase
     {
