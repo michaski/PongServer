@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PongServer.Application.Dtos.Auth;
 using PongServer.Application.Dtos.Users;
 using PongServer.Application.Services.Users;
+using PongServer.Domain.Entities;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace PongServer.Api.Controllers
@@ -13,10 +16,12 @@ namespace PongServer.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, IMapper mapper)
         {
             _usersService = usersService;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
@@ -38,11 +43,7 @@ namespace PongServer.Api.Controllers
             var result = await _usersService.ChangeNickAsync(changeNickDto);
             if (!result.Succeeded)
             {
-                return BadRequest(new
-                {
-                    Message = result.Message,
-                    Errors = result.Errors
-                });
+                return BadRequest(_mapper.Map<AccountAlterResult, FailedAuthenticationResultDto>(result));
             }
             return NoContent();
         }
@@ -54,11 +55,7 @@ namespace PongServer.Api.Controllers
             var result = await _usersService.ChangePasswordAsync(resetPasswordDto);
             if (!result.Succeeded)
             {
-                return BadRequest(new
-                {
-                    Message = result.Message,
-                    Errors = result.Errors
-                });
+                return BadRequest(_mapper.Map<AccountAlterResult, FailedAuthenticationResultDto>(result));
             }
             return NoContent();
         }
@@ -70,11 +67,7 @@ namespace PongServer.Api.Controllers
             var result = await _usersService.ChangeEmailAsync(resetEmailDto);
             if (!result.Succeeded)
             {
-                return BadRequest(new
-                {
-                    Message = result.Message,
-                    Errors = result.Errors
-                });
+                return BadRequest(_mapper.Map<AccountAlterResult, FailedAuthenticationResultDto>(result));
             }
             return NoContent();
         }
@@ -86,11 +79,7 @@ namespace PongServer.Api.Controllers
             var result = await _usersService.DeleteUserAsync();
             if (!result.Succeeded)
             {
-                return BadRequest(new
-                {
-                    Message = result.Message,
-                    Errors = result.Errors
-                });
+                return BadRequest(_mapper.Map<AccountAlterResult, FailedAuthenticationResultDto>(result));
             }
 
             return NoContent();

@@ -17,6 +17,7 @@ namespace PongServer.Application.Dtos.Auth
         public void Mapping(Profile profile)
         {
             profile.CreateMap<AuthenticationResult, FailedAuthenticationResultDto>();
+            profile.CreateMap<AccountAlterResult, FailedAuthenticationResultDto>();
         }
     }
 }

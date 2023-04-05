@@ -68,7 +68,11 @@ namespace PongServer.Application.Services.Auth
                 return new AuthenticationResult()
                 {
                     Succeeded = false,
-                    Message = "Failed to send confirmation email. Please try again."
+                    Message = "Failed to register the user.",
+                    Errors = new []
+                    { 
+                        "Failed to send confirmation email."
+                    } 
                 };
             }
 
@@ -102,7 +106,11 @@ namespace PongServer.Application.Services.Auth
                 return new AuthenticationResult()
                 {
                     Succeeded = false,
-                    Message = "User with given id does not exist."
+                    Message = "Failed to confirm the email.",
+                    Errors = new []
+                    {
+                        "Could not verify user."
+                    }
                 };
             }
             var decodedActivationCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(activationCode));
@@ -132,7 +140,11 @@ namespace PongServer.Application.Services.Auth
                 return new AuthenticationResult()
                 {
                     Succeeded = false,
-                    Message = "Login failed - wrong email or password."
+                    Message = "Login failed.",
+                    Errors = new[]
+                    {
+                        "Wrong email or password."
+                    }
                 };
             }
 
@@ -141,7 +153,11 @@ namespace PongServer.Application.Services.Auth
                 return new AuthenticationResult()
                 {
                     Succeeded = false,
-                    Message = "Account has not been activated. Please check your email for activation link."
+                    Message = "Login failed.",
+                    Errors = new[]
+                    {
+                        "Account has not been activated. Please check your email for activation link."
+                    }
                 };
             }
 
@@ -151,7 +167,11 @@ namespace PongServer.Application.Services.Auth
                 return new AuthenticationResult()
                 {
                     Succeeded = false,
-                    Message = "Login failed - wrong email or password."
+                    Message = "Login failed.",
+                    Errors = new[]
+                    {
+                        "Wrong email or password."
+                    }
                 };
             }
 

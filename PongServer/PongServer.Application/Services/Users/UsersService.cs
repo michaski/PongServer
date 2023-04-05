@@ -57,7 +57,11 @@ namespace PongServer.Application.Services.Users
                 return new AccountAlterResult
                 {
                     Succeeded = false,
-                    Message = "Could not verify user."
+                    Message = "Failed to change user name.",
+                    Errors = new []
+                    {
+                        "Could not verify user."
+                    }
                 };
             }
 
@@ -87,7 +91,11 @@ namespace PongServer.Application.Services.Users
                 return new AccountAlterResult
                 {
                     Succeeded = false,
-                    Message = "User with given id was not found."
+                    Message = "Could not delete user.",
+                    Errors = new[]
+                    {
+                        "Could not verify user."
+                    }
                 };
             }
 
@@ -117,7 +125,11 @@ namespace PongServer.Application.Services.Users
                 return new AccountAlterResult
                 {
                     Succeeded = false,
-                    Message = "User with given id was not found."
+                    Message = "Password change failed.",
+                    Errors = new[]
+                    {
+                        "Could not verify user."
+                    }
                 };
             }
 
@@ -126,7 +138,11 @@ namespace PongServer.Application.Services.Users
                 return new AccountAlterResult
                 {
                     Succeeded = false,
-                    Message = "Old password is incorrect."
+                    Message = "Password change failed.",
+                    Errors = new[]
+                    {
+                        "Old password is incorrect."
+                    }
                 };
             }
 
@@ -138,7 +154,11 @@ namespace PongServer.Application.Services.Users
                 return new AccountAlterResult
                 {
                     Succeeded = false,
-                    Message = "Reset password token is not valid."
+                    Message = "Password change failed.",
+                    Errors = new[]
+                    {
+                        "Reset password token is not valid."
+                    }
                 };
             }
 
@@ -151,6 +171,7 @@ namespace PongServer.Application.Services.Users
                 return new AccountAlterResult
                 {
                     Succeeded = false,
+                    Message = "Password change failed.",
                     Errors = result.Errors.Select(error => error.Description)
                 };
             }
@@ -170,7 +191,11 @@ namespace PongServer.Application.Services.Users
                 return new AccountAlterResult
                 {
                     Succeeded = false,
-                    Message = "User with given id was not found."
+                    Message = "Email change failed.",
+                    Errors = new[]
+                    {
+                        "Could not verify user."
+                    }
                 };
             }
 
@@ -207,10 +232,23 @@ namespace PongServer.Application.Services.Users
                         })
                 });
 
+            if (!emailSent)
+            {
+                return new AccountAlterResult
+                {
+                    Succeeded = false,
+                    Message = "Email change failed.",
+                    Errors = new[]
+                    {
+                        "Could not send verification email."
+                    }
+                };
+            }
+
             return new AccountAlterResult
             {
-                Succeeded = emailSent,
-                Message = emailSent ? "Email changed. Please activate new email." : "Could not send verification email."
+                Succeeded = true,
+                Message = "Email changed. Please activate your new email."
             };
         }
     }

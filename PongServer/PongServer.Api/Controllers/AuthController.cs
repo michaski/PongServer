@@ -58,10 +58,7 @@ namespace PongServer.Api.Controllers
             var loginResult = await _authService.AuthenticateUserAsync(loginDto);
             if (!loginResult.Succeeded)
             {
-                return Unauthorized(new
-                {
-                    Message = loginResult.Message
-                });  
+                return Unauthorized(_mapper.Map<AuthenticationResult, FailedAuthenticationResultDto>(loginResult));  
             }
             return Ok(new
             {
