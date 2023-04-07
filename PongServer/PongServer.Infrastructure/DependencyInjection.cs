@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using PongServer.Domain.Interfaces;
+using PongServer.Infrastructure.Repositories;
 
 namespace PongServer.Infrastructure
 {
@@ -11,6 +13,8 @@ namespace PongServer.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
+            services.AddScoped<IHostRepository, HostRepository>();
+
             return services;
         }
     }
