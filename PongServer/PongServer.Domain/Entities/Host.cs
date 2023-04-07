@@ -13,6 +13,7 @@ namespace PongServer.Domain.Entities
         public string Name { get; set; }
         public string Ip { get; set; }
         public int Port { get; set; }
+        public bool IsAvailable { get; set; }
         public IdentityUser Owner { get; set; }
     }
 }
