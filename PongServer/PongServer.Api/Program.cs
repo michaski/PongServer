@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NLog.Web;
+using PongServer.Api.HealthChacks;
 using PongServer.Api.Installers;
 using PongServer.Api.Middleware;
 using PongServer.Application.Dtos.HealthChecks;
@@ -23,7 +24,7 @@ var apiVersionDescriptorProvier = app.Services.GetRequiredService<IApiVersionDes
 
 app.UseHealthChecks("/health", new HealthCheckOptions
 {
-    ResponseWriter = WriteHealthCheckResponseAsync
+    ResponseWriter = HealthCheckWriter.WriteHealthCheckResponseAsync
 });
 
 // Configure the HTTP request pipeline.
@@ -50,20 +51,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-async Task WriteHealthCheckResponseAsync(HttpContext context, HealthReport report)
-{
-    context.Response.ContentType = "application/json";
-    var response = new HealthCheckResponse
-    {
-        Status = report.Status.ToString(),
-        Checks = report.Entries.Select(entry => new HealthCheck
-        {
-            Component = entry.Key,
-            Status = entry.Value.Status.ToString(),
-            Description = entry.Value.Description
-        }),
-        Duration = report.TotalDuration
-    };
-    await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-}
