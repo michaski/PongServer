@@ -21,7 +21,7 @@ namespace PongServer.Application.Services.Hosts
             throw new NotImplementedException();
         }
 
-        public async Task<Guid> CreateHostAsync(CreateHostDto createHostDto)
+        public async Task<HostDetailsDto> CreateHostAsync(CreateHostDto createHostDto)
         {
             throw new NotImplementedException();
         }

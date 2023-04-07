@@ -11,6 +11,7 @@ namespace PongServer.Application.Dtos.V1.Hosts
 {
     public class HostListDto : IMap
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
 
         public void Mapping(Profile profile)

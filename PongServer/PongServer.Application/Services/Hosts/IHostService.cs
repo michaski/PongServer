@@ -13,7 +13,7 @@ namespace PongServer.Application.Services.Hosts
     {
         Task<PagedResult<HostListDto>> GetAvailableHostsAsync(QueryFilters filters);
         Task<HostDetailsDto> GetHostByIdAsync(Guid hostId);
-        Task<Guid> CreateHostAsync(CreateHostDto createHostDto);
+        Task<HostDetailsDto> CreateHostAsync(CreateHostDto createHostDto);
         Task JoinGameAsync(Guid hostId);
         Task DeleteHostAsync(Guid hostId);
     }
