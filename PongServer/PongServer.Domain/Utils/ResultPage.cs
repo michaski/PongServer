@@ -10,5 +10,11 @@ namespace PongServer.Domain.Utils
     {
         public IEnumerable<T> Items { get; set; }
         public int TotalItemsCount { get; set; }
+
+        public ResultPage(IEnumerable<T> items, int totalItemsCount)
+        {
+            Items = items;
+            TotalItemsCount = totalItemsCount;
+        }
     }
 }

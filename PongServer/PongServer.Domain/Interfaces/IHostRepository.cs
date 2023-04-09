@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PongServer.Domain.Entities;
+using PongServer.Domain.Utils;
 
 namespace PongServer.Domain.Interfaces
 {
     public interface IHostRepository
     {
-        Task<IEnumerable<Host>> GetAvailableHostsAsync();
+        Task<ResultPage<Host>> GetAvailableHostsAsync(QueryFilters filters);
         Task<Host> GetHostByIdAsync(Guid hostId);
-        Task<Guid> CreateHostAsync(Host host);
+        Task<Host> CreateHostAsync(Host host);
         Task HideHostAsync(Host host);
         Task DeleteHostAsync(Host host);
     }

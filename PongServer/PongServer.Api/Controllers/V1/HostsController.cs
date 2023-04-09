@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PongServer.Application.Dtos.V1.Hosts;
 using PongServer.Application.Services.Hosts;
@@ -10,6 +11,7 @@ namespace PongServer.Api.Controllers.V1
     [Route("api/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
+    [Authorize]
     public class HostsController : ControllerBase
     {
         private readonly IHostService _hostService;
@@ -33,9 +35,9 @@ namespace PongServer.Api.Controllers.V1
 
         [HttpGet("{hostId}")]
         [SwaggerOperation(Summary = "Get host details")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid hostId)
         {
-            var hostInfo = await _hostService.GetHostByIdAsync(id);
+            var hostInfo = await _hostService.GetHostByIdAsync(hostId);
             if (hostInfo is null)
             {
                 return NotFound();
@@ -48,7 +50,7 @@ namespace PongServer.Api.Controllers.V1
         public async Task<IActionResult> CreateHost(CreateHostDto createHostDto)
         {
             var newHost = await _hostService.CreateHostAsync(createHostDto);
-            return CreatedAtAction("GetById", new { Id = newHost.Id }, newHost);
+            return CreatedAtAction("GetById", new { hostId = newHost.Id }, newHost);
         }
 
         [HttpPut("{hostId}")]
