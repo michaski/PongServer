@@ -8,7 +8,7 @@ using PongServer.Domain.Entities;
 using PongServer.Domain.Interfaces;
 using PongServer.Domain.Utils;
 using PongServer.Infrastructure.Data;
-using PongServer.Infrastructure.Repositories.Extensions;
+using PongServer.Infrastructure.Extensions;
 
 namespace PongServer.Infrastructure.Repositories
 {

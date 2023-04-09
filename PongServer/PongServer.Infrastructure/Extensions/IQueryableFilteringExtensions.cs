@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using PongServer.Domain.Enums;
 using PongServer.Domain.Utils;
+using PongServer.Infrastructure.Extensions;
 
-namespace PongServer.Infrastructure.Repositories.Extensions
+namespace PongServer.Infrastructure.Extensions
 {
     public static class IQueryableFilteringExtensions
     {
