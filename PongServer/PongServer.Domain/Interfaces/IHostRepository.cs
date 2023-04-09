@@ -12,6 +12,7 @@ namespace PongServer.Domain.Interfaces
     {
         Task<ResultPage<Host>> GetAvailableHostsAsync(QueryFilters filters);
         Task<Host> GetHostByIdAsync(Guid hostId);
+        Task<Host> GetHostByNameAsync(string hostName);
         Task<Host> CreateHostAsync(Host host);
         Task HideHostAsync(Host host);
         Task DeleteHostAsync(Host host);

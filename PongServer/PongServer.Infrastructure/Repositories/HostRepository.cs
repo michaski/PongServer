@@ -43,6 +43,12 @@ namespace PongServer.Infrastructure.Repositories
                 .FirstOrDefaultAsync(host => host.Id == hostId);
         }
 
+        public async Task<Host> GetHostByNameAsync(string hostName)
+        {
+            return await _context.Hosts
+                .FirstOrDefaultAsync(host => host.Name.ToLower() == hostName.ToLower());
+        }
+
         public async Task<Host> CreateHostAsync(Host host)
         {
             await _context.Hosts.AddAsync(host);

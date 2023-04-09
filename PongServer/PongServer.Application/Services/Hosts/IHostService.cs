@@ -14,7 +14,7 @@ namespace PongServer.Application.Services.Hosts
         Task<PagedResult<HostListDto>> GetAvailableHostsAsync(QueryFilters filters);
         Task<HostDetailsDto> GetHostByIdAsync(Guid hostId);
         Task<HostDetailsDto> CreateHostAsync(CreateHostDto createHostDto);
-        Task JoinGameAsync(Guid hostId);
-        Task DeleteHostAsync(Guid hostId);
+        Task<bool> JoinGameAsync(Guid hostId);
+        Task<bool> DeleteHostAsync(Guid hostId);
     }
 }

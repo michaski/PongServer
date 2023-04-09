@@ -49,6 +49,12 @@ namespace PongServer.Application.Services.Hosts
 
         public async Task<HostDetailsDto> CreateHostAsync(CreateHostDto createHostDto)
         {
+            var nameCheckHost = await _hostRepository.GetHostByNameAsync(createHostDto.Name);
+            if (nameCheckHost != null)
+            {
+                return null;
+            }
+
             var mappedHost = _mapper.Map<CreateHostDto, Host>(createHostDto);
             var owner = await _userManager.FindByIdAsync(_userContextService.UserId);
             mappedHost.Owner = owner;
@@ -57,16 +63,26 @@ namespace PongServer.Application.Services.Hosts
             return _mapper.Map<Host, HostDetailsDto>(createdHost);
         }
 
-        public async Task JoinGameAsync(Guid hostId)
+        public async Task<bool> JoinGameAsync(Guid hostId)
         {
             var hostToHide = await _hostRepository.GetHostByIdAsync(hostId);
+            if (hostToHide is null)
+            {
+                return false;
+            }
             await _hostRepository.HideHostAsync(hostToHide);
+            return true;
         }
 
-        public async Task DeleteHostAsync(Guid hostId)
+        public async Task<bool> DeleteHostAsync(Guid hostId)
         {
             var hostToDelete = await _hostRepository.GetHostByIdAsync(hostId);
+            if (hostToDelete is null)
+            {
+                return false;
+            }
             await _hostRepository.DeleteHostAsync(hostToDelete);
+            return true;
         }
     }
 }

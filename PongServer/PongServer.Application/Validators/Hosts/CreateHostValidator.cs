@@ -16,7 +16,7 @@ namespace PongServer.Application.Validators.Hosts
                 .NotEmpty()
                 .MinimumLength(7)
                 .MaximumLength(15)
-                .Matches("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}↵\r\n(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
+                .Matches("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
                 .WithMessage("Specified string is not a valid IPv4 address.");
             RuleFor(dto => dto.Name)
                 .NotEmpty()

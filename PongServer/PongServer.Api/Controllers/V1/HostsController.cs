@@ -50,6 +50,10 @@ namespace PongServer.Api.Controllers.V1
         public async Task<IActionResult> CreateHost(CreateHostDto createHostDto)
         {
             var newHost = await _hostService.CreateHostAsync(createHostDto);
+            if (newHost is null)
+            {
+                return BadRequest("Failed to host game - this name is already taken.");
+            }
             return CreatedAtAction("GetById", new { hostId = newHost.Id }, newHost);
         }
 
@@ -57,7 +61,11 @@ namespace PongServer.Api.Controllers.V1
         [SwaggerOperation(Summary = "Join game.")]
         public async Task<IActionResult> JoinGame(Guid hostId)
         {
-            await _hostService.JoinGameAsync(hostId);
+            var succeeded = await _hostService.JoinGameAsync(hostId);
+            if (!succeeded)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
 
@@ -65,7 +73,11 @@ namespace PongServer.Api.Controllers.V1
         [SwaggerOperation(Summary = "Shutdown game hosting.")]
         public async Task<IActionResult> DeleteHost(Guid hostId)
         {
-            await _hostService.DeleteHostAsync(hostId);
+            var succeeded = await _hostService.DeleteHostAsync(hostId);
+            if (!succeeded)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
     }
