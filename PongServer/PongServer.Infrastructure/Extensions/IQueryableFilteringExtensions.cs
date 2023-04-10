@@ -45,7 +45,7 @@ namespace PongServer.Infrastructure.Extensions
             return query.Where(lambda);
         }
 
-        public static IQueryable<T> OrderBy<T, T2>(this IQueryable<T> query, Func<T, T2> fieldSelector,
+        public static IQueryable<T> OrderBy<T, T2>(this IQueryable<T> query, Expression<Func<T, T2>> fieldSelector,
             SortingOrder? sortingOrder)
         {
             if (!sortingOrder.HasValue)
@@ -54,12 +54,13 @@ namespace PongServer.Infrastructure.Extensions
             }
 
             var order = sortingOrder.Value;
-            return order switch
+            query = order switch
             {
-                SortingOrder.Ascending => query.OrderBy(fieldSelector).AsQueryable(),
-                SortingOrder.Descending => query.OrderByDescending(fieldSelector).AsQueryable(),
+                SortingOrder.Ascending => query.OrderBy(fieldSelector),
+                SortingOrder.Descending => query.OrderByDescending(fieldSelector),
                 _ => throw new ArgumentOutOfRangeException($"Unsupported ordering (received {sortingOrder}).")
             };
+            return query;
         }
 
         public static IQueryable<T> Paginate<T>(this IQueryable<T> query, QueryFilters queryFilters)
