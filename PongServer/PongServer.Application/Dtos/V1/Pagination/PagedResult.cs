@@ -18,7 +18,7 @@ namespace PongServer.Application.Dtos.V1.Pagination
         public PagedResult(ResultPage<T> results, QueryFilters filters)
         {
             filters.Page ??= 1;
-            filters.PageSize ??= 1;
+            filters.PageSize ??= Math.Max(results.TotalItemsCount, 1);
             Items = results.Items;
             TotalItemsCount = results.TotalItemsCount;
             if (results.TotalItemsCount > 0)
