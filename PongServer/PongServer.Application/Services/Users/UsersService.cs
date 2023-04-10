@@ -15,6 +15,7 @@ using PongServer.Application.Services.EmailSender;
 using PongServer.Application.Services.UserContext;
 using PongServer.Domain.Entities;
 using PongServer.Domain.Enums;
+using PongServer.Domain.Interfaces;
 
 namespace PongServer.Application.Services.Users
 {
@@ -26,6 +27,7 @@ namespace PongServer.Application.Services.Users
         private readonly IEmailSenderService _emailSenderService;
         private readonly LinkGenerator _linkGenerator;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPlayerScoreRepository _playerScoreRepository;
 
         public UsersService(
             IMapper mapper, 
@@ -33,7 +35,8 @@ namespace PongServer.Application.Services.Users
             IUserContextService userContextService,
             IEmailSenderService emailSenderService,
             LinkGenerator linkGenerator,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IPlayerScoreRepository playerScoreRepository)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -41,6 +44,7 @@ namespace PongServer.Application.Services.Users
             _emailSenderService = emailSenderService;
             _linkGenerator = linkGenerator;
             _httpContextAccessor = httpContextAccessor;
+            _playerScoreRepository = playerScoreRepository;
         }
 
         public async Task<CreatedUserDto> GetUserByIdAsync(Guid id)
@@ -98,6 +102,9 @@ namespace PongServer.Application.Services.Users
                     }
                 };
             }
+
+            var playerScore = await _playerScoreRepository.GetPlayersScoreAsync(user);
+            await _playerScoreRepository.DeletePlayersScoreAsync(playerScore);
 
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)

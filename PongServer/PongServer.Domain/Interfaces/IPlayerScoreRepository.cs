@@ -15,6 +15,6 @@ namespace PongServer.Domain.Interfaces
         Task<PlayerScore> GetPlayersScoreAsync(IdentityUser player);
         Task<PlayerScore> CreateScoreForPlayerAsync(IdentityUser player);
         Task UpdatePlayerScoreAsync(PlayerScore updatedScore);
-        Task DeletePlayersScoreAsync(PlayerScore player);
+        Task DeletePlayersScoreAsync(PlayerScore playerScore);
     }
 }

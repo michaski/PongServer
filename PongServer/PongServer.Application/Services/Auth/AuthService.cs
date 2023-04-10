@@ -18,6 +18,7 @@ using PongServer.Application.Services.UserContext;
 using PongServer.Domain.Entities;
 using PongServer.Domain.Enums;
 using PongServer.Domain.Exceptions.Auth;
+using PongServer.Domain.Interfaces;
 
 namespace PongServer.Application.Services.Auth
 {
@@ -30,6 +31,7 @@ namespace PongServer.Application.Services.Auth
         private readonly LinkGenerator _linkGenerator;
         private readonly IConfiguration _configuration;
         private readonly IUserContextService _userContextService;
+        private readonly IPlayerScoreRepository _playerScoreRepository;
 
         public AuthService(
             UserManager<IdentityUser> userManager, 
@@ -38,7 +40,8 @@ namespace PongServer.Application.Services.Auth
             IHttpContextAccessor httpContextAccessor,
             LinkGenerator linkGenerator,
             IConfiguration configuration,
-            IUserContextService userContextService)
+            IUserContextService userContextService,
+            IPlayerScoreRepository playerScoreRepository)
         {
             _userManager = userManager;
             _mapper = mapper;
@@ -47,6 +50,7 @@ namespace PongServer.Application.Services.Auth
             _linkGenerator = linkGenerator;
             _configuration = configuration;
             _userContextService = userContextService;
+            _playerScoreRepository = playerScoreRepository;
         }
 
         public async Task<AuthenticationResult> RegisterNewUserAsync(RegisterUserDto userDto)
@@ -77,6 +81,7 @@ namespace PongServer.Application.Services.Auth
             }
 
             var createdUser = await _userManager.FindByEmailAsync(userDto.Email);
+            await _playerScoreRepository.CreateScoreForPlayerAsync(createdUser);
             return new AuthenticationResult()
             {
                 Succeeded = true,

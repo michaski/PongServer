@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PongServer.Domain.Entities;
 using PongServer.Domain.Interfaces;
 using PongServer.Domain.Utils;
@@ -27,12 +28,17 @@ namespace PongServer.Infrastructure.Repositories
 
         public async Task<PlayerScore> GetPlayersScoreAsync(IdentityUser player)
         {
-            throw new NotImplementedException();
+            return await _context.Scores
+                .FirstOrDefaultAsync(score => score.Player.Id == player.Id);
         }
 
         public async Task<PlayerScore> CreateScoreForPlayerAsync(IdentityUser player)
         {
-            throw new NotImplementedException();
+            var playerScore = new PlayerScore();
+            playerScore.Player = player;
+            _context.Scores.Add(playerScore);
+            await _context.SaveChangesAsync();
+            return playerScore;
         }
 
         public async Task UpdatePlayerScoreAsync(PlayerScore updatedScore)
@@ -40,9 +46,10 @@ namespace PongServer.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task DeletePlayersScoreAsync(PlayerScore player)
+        public async Task DeletePlayersScoreAsync(PlayerScore playerScore)
         {
-            throw new NotImplementedException();
+            _context.Scores.Remove(playerScore);
+            await _context.SaveChangesAsync();
         }
     }
 }
