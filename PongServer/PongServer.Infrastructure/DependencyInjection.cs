@@ -14,6 +14,7 @@ namespace PongServer.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddScoped<IHostRepository, HostRepository>();
+            services.AddScoped<IPlayerScoreRepository, PlayerScoreRepository>();
 
             return services;
         }
