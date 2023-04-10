@@ -17,7 +17,10 @@ namespace PongServer.Domain.HelperMethods
                 k = 16;
             }
 
-            return (int)Math.Round(playerScore + k * ((int)gameResult - CalculateWinChance(playerScore, opponentScore)), 0);
+            var calculatedScore = (int)Math.Round(
+                playerScore + k * ((int)gameResult - CalculateWinChance(playerScore, opponentScore)), 
+                0);
+            return Math.Max(calculatedScore, 0);
         }
 
         public static double CalculateWinChance(int playerScore, int opponentScore)
