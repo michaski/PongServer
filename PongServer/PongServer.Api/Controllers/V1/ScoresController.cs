@@ -22,7 +22,7 @@ namespace PongServer.Api.Controllers.V1
 
         [HttpGet]
         [SwaggerOperation(Summary = "Get player ranking list.")]
-        public async Task<IActionResult> GetPlayerRanking(QueryFilters filters)
+        public async Task<IActionResult> GetPlayerRanking([FromQuery] QueryFilters filters)
         {
             var result = await _playerScoreService.GetPlayerRankingAsync(filters);
             if (!result.Items.Any())

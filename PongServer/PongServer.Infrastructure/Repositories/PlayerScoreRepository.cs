@@ -9,6 +9,7 @@ using PongServer.Domain.Entities;
 using PongServer.Domain.Interfaces;
 using PongServer.Domain.Utils;
 using PongServer.Infrastructure.Data;
+using PongServer.Infrastructure.Extensions;
 
 namespace PongServer.Infrastructure.Repositories
 {
@@ -21,9 +22,12 @@ namespace PongServer.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<ResultPage<PlayerScore>> GetScoreListAsync(QueryFilters filters)
+        public async Task<ResultPage<PlayerScore>> GetScoreListAsync(QueryFilters filters)
         {
-            throw new NotImplementedException();
+            return await _context.Scores
+                .Include(score => score.Player)
+                .OrderByDescending(score => score.RankingScore)
+                .ToResultPageAsync(filters);
         }
 
         public async Task<PlayerScore> GetPlayersScoreAsync(IdentityUser player)
