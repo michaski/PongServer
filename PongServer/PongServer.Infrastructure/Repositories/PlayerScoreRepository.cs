@@ -41,9 +41,11 @@ namespace PongServer.Infrastructure.Repositories
             return playerScore;
         }
 
-        public async Task UpdatePlayerScoreAsync(PlayerScore updatedScore)
+        public async Task UpdateScoreAfterGameAsync(PlayerScore firstScore, PlayerScore secondScore)
         {
-            throw new NotImplementedException();
+            _context.Scores.Update(firstScore);
+            _context.Scores.Update(secondScore);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeletePlayersScoreAsync(PlayerScore playerScore)
