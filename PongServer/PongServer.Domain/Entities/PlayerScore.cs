@@ -11,7 +11,8 @@ namespace PongServer.Domain.Entities
     {
         public Guid Id { get; set; }
         public int GamesPlayed { get; set; }
-        public int Score { get; set; }
+        public int GamesWon { get; set; }
+        public int RankingScore { get; set; }
         public IdentityUser Player { get; set; }
     }
 }

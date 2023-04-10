@@ -50,11 +50,11 @@ namespace PongServer.Application.Services.PlayerScores
 
             var playerScore = await _playerScoreRepository.GetPlayersScoreAsync(player);
             playerScore.GamesPlayed += 1;
-            playerScore.Score += (int)scoreDto.MatchResult;
+            playerScore.GamesWon += (int)scoreDto.MatchResult;
 
             var opponentScore = await _playerScoreRepository.GetPlayersScoreAsync(opponent);
             opponentScore.GamesPlayed += 1;
-            opponentScore.Score += scoreDto.MatchResult == GameResult.Won ? 0 : 1;
+            opponentScore.GamesWon += scoreDto.MatchResult == GameResult.Won ? 0 : 1;
 
             await _playerScoreRepository.UpdateScoreAfterGameAsync(playerScore, opponentScore);
             return true;
