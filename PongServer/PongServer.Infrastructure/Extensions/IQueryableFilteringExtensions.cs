@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using NLog.Filters;
 using PongServer.Domain.Enums;
 using PongServer.Domain.Utils;
 using PongServer.Infrastructure.Extensions;
@@ -73,6 +74,16 @@ namespace PongServer.Infrastructure.Extensions
             }
 
             return query;
+        }
+
+        public static async Task<ResultPage<T>> ToResultPageAsync<T>(this IQueryable<T> query, QueryFilters filters)
+        {
+            var paginatedQuery = query.Paginate(filters);
+
+            var allItemsCount = await query.CountAsync();
+            var paginatedResults = await paginatedQuery.ToListAsync();
+
+            return new ResultPage<T>(paginatedResults, allItemsCount);
         }
     }
 }

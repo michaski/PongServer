@@ -23,18 +23,13 @@ namespace PongServer.Infrastructure.Repositories
 
         public async Task<ResultPage<Host>> GetAvailableHostsAsync(QueryFilters filters)
         {
-            var filteredQuery = _context.Hosts
+            var results = await _context.Hosts
                 .Where(host => host.IsAvailable == true)
                 .SearchInField(host => host.Name, filters.HostName)
-                .OrderBy(host => host.Name, filters.Ordering);
+                .OrderBy(host => host.Name, filters.Ordering)
+                .ToResultPageAsync(filters);
 
-            var results = await filteredQuery
-                .Paginate(filters)
-                .ToListAsync();
-
-            var allItemsCount = await filteredQuery.CountAsync();
-
-            return new ResultPage<Host>(results, allItemsCount);
+            return results;
         }
 
         public async Task<Host> GetHostByIdAsync(Guid hostId)
