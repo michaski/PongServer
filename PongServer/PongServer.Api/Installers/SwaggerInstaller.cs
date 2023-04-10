@@ -15,8 +15,8 @@ namespace PongServer.Api.Installers
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "NoteLinkBackend.Api", Version = "v1" });
-                c.SwaggerDoc("v2", new OpenApiInfo { Title = "NoteLinkBackend.Api", Version = "v2" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PongServer.Api", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "PongServer.Api", Version = "v2" });
                 c.EnableAnnotations();
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
