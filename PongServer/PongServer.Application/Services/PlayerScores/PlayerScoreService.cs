@@ -71,6 +71,11 @@ namespace PongServer.Application.Services.PlayerScores
                 opponentScore.RankingScore, playerScore.RankingScore);
 
             await _playerScoreRepository.UpdateScoreAfterGameAsync(playerScore, opponentScore);
+
+            playerScore.RankingPosition = await _playerScoreRepository.GetPlayerPositionAsync(playerScore);
+            opponentScore.RankingPosition = await _playerScoreRepository.GetPlayerPositionAsync(opponentScore);
+            await _playerScoreRepository.UpdateScoreAfterGameAsync(playerScore, opponentScore);
+
             return true;
         }
     }

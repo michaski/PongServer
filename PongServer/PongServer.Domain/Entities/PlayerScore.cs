@@ -13,6 +13,7 @@ namespace PongServer.Domain.Entities
         public int GamesPlayed { get; set; }
         public int GamesWon { get; set; }
         public int RankingScore { get; set; }
+        public int RankingPosition { get; set; }
         public IdentityUser Player { get; set; }
     }
 }

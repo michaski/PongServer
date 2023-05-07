@@ -17,6 +17,7 @@ namespace PongServer.Application.Dtos.V1.PlayerScores
         public int GamesLost { get; set; }
         public int TotalGamesPlayed { get; set; }
         public int RankingScore { get; set; }
+        public int RankingPosition { get; set; }
 
         public void Mapping(Profile profile)
         {

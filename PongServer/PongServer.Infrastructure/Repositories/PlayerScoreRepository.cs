@@ -26,7 +26,7 @@ namespace PongServer.Infrastructure.Repositories
         {
             return await _context.Scores
                 .Include(score => score.Player)
-                .OrderByDescending(score => score.RankingScore)
+                .OrderBy(score => score.RankingPosition)
                 .ToResultPageAsync(filters);
         }
 
@@ -36,10 +36,17 @@ namespace PongServer.Infrastructure.Repositories
                 .FirstOrDefaultAsync(score => score.Player.Id == player.Id);
         }
 
+        public async Task<int> GetPlayerPositionAsync(PlayerScore player)
+        {
+            return await _context.Scores
+                .CountAsync(score => score.RankingScore > player.RankingScore) + 1;
+        }
+
         public async Task<PlayerScore> CreateScoreForPlayerAsync(IdentityUser player)
         {
             var playerScore = new PlayerScore();
             playerScore.Player = player;
+            playerScore.RankingPosition = await GetPlayerPositionAsync(playerScore);
             _context.Scores.Add(playerScore);
             await _context.SaveChangesAsync();
             return playerScore;

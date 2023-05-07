@@ -13,6 +13,7 @@ namespace PongServer.Domain.Interfaces
     {
         Task<ResultPage<PlayerScore>> GetScoreListAsync(QueryFilters filters);
         Task<PlayerScore> GetPlayersScoreAsync(IdentityUser player);
+        Task<int> GetPlayerPositionAsync(PlayerScore player);
         Task<PlayerScore> CreateScoreForPlayerAsync(IdentityUser player);
         Task UpdateScoreAfterGameAsync(PlayerScore firstScore, PlayerScore secondScore);
         Task DeletePlayersScoreAsync(PlayerScore playerScore);
