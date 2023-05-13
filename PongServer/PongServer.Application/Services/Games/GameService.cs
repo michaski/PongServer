@@ -105,41 +105,6 @@ namespace PongServer.Application.Services.Games
             };
         }
 
-        public async Task<ApplicationResult<bool>> UpdateScoreAsync(UpdateScoreDto scoreDto)
-        {
-            var game = await _gameRepository.GetByIdAsync(scoreDto.GameId);
-            if (game is null)
-            {
-                return new ApplicationResult<bool>
-                {
-                    Status = 400,
-                    Message = "Game was not found."
-                };
-            }
-            if (game.HostPlayer.Id != _userContextService.UserId)
-            {
-                return new ApplicationResult<bool>
-                {
-                    Status = 403,
-                    Message = "Only game host can modify score."
-                };
-            }
-            if (scoreDto.HostWon)
-            {
-                game.HostPlayerScore++;
-            }
-            else
-            {
-                game.GuestPlayerScore++;
-            }
-            game.LastUpdateTime = DateTime.UtcNow;
-            await _gameRepository.UpdateGameAsync(game);
-            return new ApplicationResult<bool>
-            {
-                Status = 200
-            };
-        }
-
         public async Task EndGameAsync(Guid gameId)
         {
             var game = await _gameRepository.GetByIdAsync(gameId);

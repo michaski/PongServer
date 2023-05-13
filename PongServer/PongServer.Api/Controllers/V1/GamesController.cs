@@ -45,20 +45,6 @@ namespace PongServer.Api.Controllers.V1
             return CreatedAtAction("GetById", new { id = createdGame.Id }, createdGame);
         }
 
-        [HttpPut]
-        [SwaggerOperation(Summary = "Update score during game")]
-        public async Task<IActionResult> UpdateScore(UpdateScoreDto updateScoreDto)
-        {
-            var result = await _gameService.UpdateScoreAsync(updateScoreDto);
-            return result.Status switch
-            {
-                200 => NoContent(),
-                400 => BadRequest(result.Message),
-                403 => Forbid(result.Message),
-                _ => BadRequest()
-            };
-        }
-
         [HttpDelete("{id}")]
         [SwaggerOperation(Summary = "End game with given id.")]
         public async Task<IActionResult> EndGame(Guid id)
