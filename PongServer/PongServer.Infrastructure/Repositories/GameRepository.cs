@@ -19,6 +19,13 @@ namespace PongServer.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<Game>> GetStaleGamesAsync(TimeSpan minStaleTime)
+        {
+            return await _context.Games
+                .Where(game => DateTime.UtcNow - game.LastUpdateTime >= minStaleTime)
+                .ToListAsync();
+        }
+
         public async Task<Game> GetByIdAsync(Guid id)
         {
             return await _context.Games

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NLog.Web;
+using PongServer.Api.BackgroundJobs;
 using PongServer.Api.HealthChacks;
 using PongServer.Api.Installers;
 using PongServer.Api.Middleware;

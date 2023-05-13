@@ -9,6 +9,7 @@ namespace PongServer.Domain.Interfaces
 {
     public interface IGameRepository
     {
+        Task<IEnumerable<Game>> GetStaleGamesAsync(TimeSpan minStaleTime);
         Task<Game> GetByIdAsync(Guid id);
         Task<Game> CreateGameAsync(Game game);
         Task UpdateGameAsync(Game game);

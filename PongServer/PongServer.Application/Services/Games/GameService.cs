@@ -116,5 +116,14 @@ namespace PongServer.Application.Services.Games
             await _gameRepository.DeleteGameAsync(game);
             await _hostRepository.DeleteHostAsync(gameHost);
         }
+
+        public async Task DeleteStaleGamesAsync()
+        {
+            var staleGames = await _gameRepository.GetStaleGamesAsync(TimeSpan.FromHours(1));
+            foreach (var game in staleGames)
+            {
+                await EndGameAsync(game.Id);
+            }
+        }
     }
 }
