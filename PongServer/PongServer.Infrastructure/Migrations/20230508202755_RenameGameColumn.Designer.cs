@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PongServer.Infrastructure.Data;
@@ -11,9 +12,10 @@ using PongServer.Infrastructure.Data;
 namespace PongServer.Infrastructure.Migrations
 {
     [DbContext(typeof(PongDataContext))]
-    partial class PongDataContextModelSnapshot : ModelSnapshot
+    [Migration("20230508202755_RenameGameColumn")]
+    partial class RenameGameColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

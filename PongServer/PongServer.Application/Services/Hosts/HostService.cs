@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using PongServer.Application.Dtos.LayerResult;
 using PongServer.Application.Dtos.V1.Hosts;
 using PongServer.Application.Dtos.V1.Pagination;
 using PongServer.Application.Services.UserContext;
@@ -47,31 +48,65 @@ namespace PongServer.Application.Services.Hosts
             return _mapper.Map<Host, HostDetailsDto>(foundHost);
         }
 
-        public async Task<HostDetailsDto> CreateHostAsync(CreateHostDto createHostDto)
+        public async Task<ApplicationResult<HostDetailsDto>> CreateHostAsync(CreateHostDto createHostDto)
         {
+            var userIsAlreadyHosting = await _hostRepository.UserIsHostingGameAsync(_userContextService.UserId);
+            if (userIsAlreadyHosting)
+            {
+                return new ApplicationResult<HostDetailsDto>
+                {
+                    Status = 400,
+                    Message = "You are already hosting a game."
+                };
+            }
+
             var nameCheckHost = await _hostRepository.GetHostByNameAsync(createHostDto.Name);
             if (nameCheckHost != null)
             {
-                return null;
+                return new ApplicationResult<HostDetailsDto>
+                {
+                    Status = 400,
+                    Message = "This name is already taken."
+                };
             }
 
-            var mappedHost = _mapper.Map<CreateHostDto, Host>(createHostDto);
+            var hostInfo = _mapper.Map<CreateHostDto, Host>(createHostDto);
             var owner = await _userManager.FindByIdAsync(_userContextService.UserId);
-            mappedHost.Owner = owner;
-            mappedHost.IsAvailable = true;
-            var createdHost = await _hostRepository.CreateHostAsync(mappedHost);
-            return _mapper.Map<Host, HostDetailsDto>(createdHost);
+            hostInfo.Owner = owner;
+            hostInfo.IsAvailable = true;
+            var createdHost = await _hostRepository.CreateHostAsync(hostInfo);
+            var mappedHost = _mapper.Map<Host, HostDetailsDto>(createdHost);
+            return new ApplicationResult<HostDetailsDto>()
+            {
+                Status = 203,
+                Result = mappedHost
+            };
         }
 
-        public async Task<bool> JoinGameAsync(Guid hostId)
+        public async Task<ApplicationResult<bool>> JoinGameAsync(Guid hostId)
         {
             var hostToHide = await _hostRepository.GetHostByIdAsync(hostId);
             if (hostToHide is null)
             {
-                return false;
+                return new ApplicationResult<bool>
+                {
+                    Status = 400,
+                    Message = "Host was not found"
+                };
+            }
+            if (hostToHide.Owner.Id == _userContextService.UserId)
+            {
+                return new ApplicationResult<bool>
+                {
+                    Status = 400,
+                    Message = "User can't join his own host"
+                };
             }
             await _hostRepository.HideHostAsync(hostToHide);
-            return true;
+            return new ApplicationResult<bool>
+            {
+                Status = 200
+            };
         }
 
         public async Task<bool> DeleteHostAsync(Guid hostId)

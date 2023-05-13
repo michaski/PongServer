@@ -13,10 +13,12 @@ namespace PongServer.Application.Dtos.V1.Hosts
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Owner { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Host, HostListDto>();
+            profile.CreateMap<Host, HostListDto>()
+                .ForMember(dto => dto.Owner, opt => opt.MapFrom(host => host.Owner.UserName));
         }
     }
 }

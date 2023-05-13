@@ -49,11 +49,12 @@ namespace PongServer.Api.Controllers.V1
         [SwaggerOperation(Summary = "Host a game.")]
         public async Task<IActionResult> CreateHost(CreateHostDto createHostDto)
         {
-            var newHost = await _hostService.CreateHostAsync(createHostDto);
-            if (newHost is null)
+            var result = await _hostService.CreateHostAsync(createHostDto);
+            if (result.Status == 400)
             {
-                return BadRequest("Failed to host game - this name is already taken.");
+                return BadRequest(result.Message);
             }
+            var newHost = result.Result;
             return CreatedAtAction("GetById", new { hostId = newHost.Id }, newHost);
         }
 
@@ -61,10 +62,10 @@ namespace PongServer.Api.Controllers.V1
         [SwaggerOperation(Summary = "Join game.")]
         public async Task<IActionResult> JoinGame(Guid hostId)
         {
-            var succeeded = await _hostService.JoinGameAsync(hostId);
-            if (!succeeded)
+            var result = await _hostService.JoinGameAsync(hostId);
+            if (result.Status == 400)
             {
-                return NotFound();
+                return BadRequest(result.Message);
             }
             return NoContent();
         }

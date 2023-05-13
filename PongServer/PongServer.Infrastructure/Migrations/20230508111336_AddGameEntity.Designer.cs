@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PongServer.Infrastructure.Data;
@@ -11,9 +12,10 @@ using PongServer.Infrastructure.Data;
 namespace PongServer.Infrastructure.Migrations
 {
     [DbContext(typeof(PongDataContext))]
-    partial class PongDataContextModelSnapshot : ModelSnapshot
+    [Migration("20230508111336_AddGameEntity")]
+    partial class AddGameEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,11 +85,11 @@ namespace PongServer.Infrastructure.Migrations
                     b.Property<DateTime>("GameStartTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("GuestPlayerId")
-                        .HasColumnType("text");
-
                     b.Property<int>("GuestPlayerScore")
                         .HasColumnType("integer");
+
+                    b.Property<string>("GuestUserId")
+                        .HasColumnType("text");
 
                     b.Property<Guid>("HostId")
                         .HasColumnType("uuid");
@@ -103,7 +105,7 @@ namespace PongServer.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GuestPlayerId");
+                    b.HasIndex("GuestUserId");
 
                     b.HasIndex("HostId")
                         .IsUnique();
@@ -173,9 +175,9 @@ namespace PongServer.Infrastructure.Migrations
 
             modelBuilder.Entity("PongServer.Domain.Entities.Game", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "GuestPlayer")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "GuestUser")
                         .WithMany()
-                        .HasForeignKey("GuestPlayerId");
+                        .HasForeignKey("GuestUserId");
 
                     b.HasOne("PongServer.Domain.Entities.Host", "Host")
                         .WithOne("HostedGame")
@@ -187,7 +189,7 @@ namespace PongServer.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("HostPlayerId");
 
-                    b.Navigation("GuestPlayer");
+                    b.Navigation("GuestUser");
 
                     b.Navigation("Host");
 

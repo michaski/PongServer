@@ -13,6 +13,7 @@ namespace PongServer.Infrastructure.Data
     {
         public DbSet<Host> Hosts { get; set; }
         public DbSet<PlayerScore> Scores { get; set; }
+        public DbSet<Game> Games { get; set; }
 
         public PongDataContext(DbContextOptions<PongDataContext> options)
             : base(options) { }

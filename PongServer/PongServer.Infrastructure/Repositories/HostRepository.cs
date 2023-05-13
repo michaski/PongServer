@@ -24,6 +24,7 @@ namespace PongServer.Infrastructure.Repositories
         public async Task<ResultPage<Host>> GetAvailableHostsAsync(QueryFilters filters)
         {
             var results = await _context.Hosts
+                .Include(host => host.Owner)
                 .Where(host => host.IsAvailable == true)
                 .SearchInField(host => host.Name, filters.HostName)
                 .OrderBy(host => host.Name, filters.Ordering)
@@ -35,6 +36,7 @@ namespace PongServer.Infrastructure.Repositories
         public async Task<Host> GetHostByIdAsync(Guid hostId)
         {
             return await _context.Hosts
+                .Include(host => host.Owner)
                 .FirstOrDefaultAsync(host => host.Id == hostId);
         }
 
@@ -42,6 +44,12 @@ namespace PongServer.Infrastructure.Repositories
         {
             return await _context.Hosts
                 .FirstOrDefaultAsync(host => host.Name.ToLower() == hostName.ToLower());
+        }
+
+        public async Task<bool> UserIsHostingGameAsync(string userId)
+        {
+            return await _context.Hosts
+                .AnyAsync(host => host.Owner.Id == userId);
         }
 
         public async Task<Host> CreateHostAsync(Host host)

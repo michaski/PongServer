@@ -15,5 +15,6 @@ namespace PongServer.Domain.Entities
         public int Port { get; set; }
         public bool IsAvailable { get; set; }
         public IdentityUser Owner { get; set; }
+        public Game? HostedGame { get; set; }
     }
 }

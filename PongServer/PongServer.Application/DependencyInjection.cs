@@ -11,6 +11,7 @@ using PongServer.Application.Dtos.V1.Auth;
 using PongServer.Application.Dtos.V1.Hosts;
 using PongServer.Application.Dtos.V1.Users;
 using PongServer.Application.Services.Auth;
+using PongServer.Application.Services.Games;
 using PongServer.Application.Services.Hosts;
 using PongServer.Application.Services.PlayerScores;
 using PongServer.Application.Services.UserContext;
@@ -42,6 +43,7 @@ namespace PongServer.Application
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IHostService, HostService>();
             services.AddScoped<IPlayerScoreService, PlayerScoreService>();
+            services.AddScoped<IGameService, GameService>();
 
             return services;
         }

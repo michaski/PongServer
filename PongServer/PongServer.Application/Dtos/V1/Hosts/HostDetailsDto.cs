@@ -15,10 +15,12 @@ namespace PongServer.Application.Dtos.V1.Hosts
         public string Name { get; set; }
         public string Ip { get; set; }
         public int Port { get; set; }
+        public string Owner { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Host, HostDetailsDto>();
+            profile.CreateMap<Host, HostDetailsDto>()
+                .ForMember(dto => dto.Owner, opt => opt.MapFrom(host => host.Owner.UserName));
         }
     }
 }
