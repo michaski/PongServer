@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using PongServer.Application.Dtos.LayerResult;
 using PongServer.Application.Dtos.V1.Games;
+using PongServer.Application.Services.UserContext;
 using PongServer.Domain.Entities;
 using PongServer.Domain.Interfaces;
 
@@ -16,17 +17,20 @@ namespace PongServer.Application.Services.Games
     {
         private readonly IGameRepository _gameRepository;
         private readonly IHostRepository _hostRepository;
+        private readonly IUserContextService _userContextService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IMapper _mapper;
 
         public GameService(
             IGameRepository gameRepository, 
             IHostRepository hostRepository, 
+            IUserContextService userContextService,
             UserManager<IdentityUser> userManager, 
             IMapper mapper)
         {
             _gameRepository = gameRepository;
             _hostRepository = hostRepository;
+            _userContextService = userContextService;
             _userManager = userManager;
             _mapper = mapper;
         }
@@ -94,6 +98,41 @@ namespace PongServer.Application.Services.Games
             {
                 Status = 203,
                 Result = mappedGame
+            };
+        }
+
+        public async Task<ApplicationResult<bool>> UpdateScoreAsync(UpdateScoreDto scoreDto)
+        {
+            var game = await _gameRepository.GetByIdAsync(scoreDto.GameId);
+            if (game is null)
+            {
+                return new ApplicationResult<bool>
+                {
+                    Status = 400,
+                    Message = "Game was not found."
+                };
+            }
+            if (game.HostPlayer.Id != _userContextService.UserId)
+            {
+                return new ApplicationResult<bool>
+                {
+                    Status = 403,
+                    Message = "Only game host can modify score."
+                };
+            }
+            if (scoreDto.HostWon)
+            {
+                game.HostPlayerScore++;
+            }
+            else
+            {
+                game.GuestPlayerScore++;
+            }
+            game.LastUpdateTime = DateTime.UtcNow;
+            await _gameRepository.UpdateGameAsync(game);
+            return new ApplicationResult<bool>
+            {
+                Status = 200
             };
         }
     }
