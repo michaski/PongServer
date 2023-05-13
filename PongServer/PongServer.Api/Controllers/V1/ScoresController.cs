@@ -25,11 +25,6 @@ namespace PongServer.Api.Controllers.V1
         public async Task<IActionResult> GetPlayerRanking([FromQuery] QueryFilters filters)
         {
             var result = await _playerScoreService.GetPlayerRankingAsync(filters);
-            if (!result.Items.Any())
-            {
-                return NotFound();
-            }
-
             return Ok(result);
         }
 

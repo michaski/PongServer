@@ -26,10 +26,6 @@ namespace PongServer.Api.Controllers.V1
         public async Task<IActionResult> GetAll([FromQuery] QueryFilters filters)
         {
             var result = await _hostService.GetAvailableHostsAsync(filters);
-            if (!result.Items.Any())
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
 
