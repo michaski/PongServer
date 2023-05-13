@@ -18,17 +18,20 @@ namespace PongServer.Application.Services.PlayerScores
     public class PlayerScoreService : IPlayerScoreService
     {
         private readonly IPlayerScoreRepository _playerScoreRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserContextService _userContextService;
         private readonly IMapper _mapper;
 
         public PlayerScoreService(
             IPlayerScoreRepository playerScoreRepository,
+            IGameRepository gameRepository,
             UserManager<IdentityUser> userManager,
             IUserContextService userContextService,
             IMapper mapper)
         {
             _playerScoreRepository = playerScoreRepository;
+            _gameRepository = gameRepository;
             _userManager = userManager;
             _userContextService = userContextService;
             _mapper = mapper;
@@ -44,6 +47,12 @@ namespace PongServer.Application.Services.PlayerScores
 
         public async Task<bool> UpdatePlayerScoreAsync(PlayerScoreDto scoreDto)
         {
+            var game = await _gameRepository.GetByIdAsync(scoreDto.GameId);
+            if (game is null)
+            {
+                return false;
+            }
+
             var player = await _userManager.FindByIdAsync(_userContextService.UserId);
             if (player == null)
             {
@@ -75,6 +84,9 @@ namespace PongServer.Application.Services.PlayerScores
             playerScore.RankingPosition = await _playerScoreRepository.GetPlayerPositionAsync(playerScore);
             opponentScore.RankingPosition = await _playerScoreRepository.GetPlayerPositionAsync(opponentScore);
             await _playerScoreRepository.UpdateScoreAfterGameAsync(playerScore, opponentScore);
+
+            game.LastUpdateTime = DateTime.UtcNow;
+            await _gameRepository.UpdateGameAsync(game);
 
             return true;
         }
