@@ -13,5 +13,6 @@ namespace PongServer.Application.Services.Games
         Task<GameDetailsDto> GetGameByIdAsync(Guid id);
         Task<ApplicationResult<GameDetailsDto>> CreateNewGameAsync(CreateGameDto dto);
         Task<ApplicationResult<bool>> UpdateScoreAsync(UpdateScoreDto scoreDto);
+        Task EndGameAsync(Guid gameId);
     }
 }

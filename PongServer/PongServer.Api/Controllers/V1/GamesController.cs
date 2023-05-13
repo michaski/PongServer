@@ -58,5 +58,13 @@ namespace PongServer.Api.Controllers.V1
                 _ => BadRequest()
             };
         }
+
+        [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "End game with given id.")]
+        public async Task<IActionResult> EndGame(Guid id)
+        {
+            await _gameService.EndGameAsync(id);
+            return NoContent();
+        }
     }
 }

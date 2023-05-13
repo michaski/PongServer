@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -9,6 +11,8 @@ using PongServer.Application.Dtos.LayerResult;
 using PongServer.Application.Dtos.V1.Games;
 using PongServer.Application.Services.UserContext;
 using PongServer.Domain.Entities;
+using PongServer.Domain.Enums;
+using PongServer.Domain.HelperMethods;
 using PongServer.Domain.Interfaces;
 
 namespace PongServer.Application.Services.Games
@@ -23,7 +27,7 @@ namespace PongServer.Application.Services.Games
 
         public GameService(
             IGameRepository gameRepository, 
-            IHostRepository hostRepository, 
+            IHostRepository hostRepository,
             IUserContextService userContextService,
             UserManager<IdentityUser> userManager, 
             IMapper mapper)
@@ -134,6 +138,18 @@ namespace PongServer.Application.Services.Games
             {
                 Status = 200
             };
+        }
+
+        public async Task EndGameAsync(Guid gameId)
+        {
+            var game = await _gameRepository.GetByIdAsync(gameId);
+            var gameHost = game.Host;
+            if (game is null)
+            {
+                return;
+            }
+            await _gameRepository.DeleteGameAsync(game);
+            await _hostRepository.DeleteHostAsync(gameHost);
         }
     }
 }

@@ -21,7 +21,11 @@ namespace PongServer.Infrastructure.Repositories
 
         public async Task<Game> GetByIdAsync(Guid id)
         {
-            return await _context.Games.FirstOrDefaultAsync(game => game.Id == id);
+            return await _context.Games
+                .Include(game => game.HostPlayer)
+                .Include(game => game.GuestPlayer)
+                .Include(game => game.Host)
+                .FirstOrDefaultAsync(game => game.Id == id);
         }
 
         public async Task<Game> CreateGameAsync(Game game)
